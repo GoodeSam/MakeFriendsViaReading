@@ -926,3 +926,17 @@ Swagger UI: `http://localhost:8000/docs`
 git branch -M main
 
 git push -u origin main
+
+
+
+对目前代码进行优化，使其可以显示每一本书流转的次数，从而突出某些书很受欢迎
+
+Optimize the current code to display how many
+
+   times each book has been circulated, thereby highlighting
+
+   popular books.
+
+
+
+书目展示页面，可以按照书目名单进行排序，也可以按照小区名称进行排序。除了赠送和借阅，也增加一个二手出出售和求购的界面

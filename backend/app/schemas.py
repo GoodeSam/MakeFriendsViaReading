@@ -8,6 +8,7 @@ from .enums import (
     BookCategory,
     ConversationType,
     ListingStatus,
+    ListingType,
     MessageType,
     TransactionType,
     UserStatus,
@@ -87,10 +88,13 @@ class OwnerBrief(BaseModel):
 
 class ListingCreate(BaseModel):
     isbn: str
+    listing_type: ListingType = ListingType.OFFER
     condition_note: str | None = None
     can_gift: bool = False
     can_swap: bool = False
     can_borrow: bool = False
+    can_sell: bool = False
+    sell_price: int | None = None
     borrow_terms: str | None = None
 
 
@@ -100,11 +104,15 @@ class ListingOut(BaseModel):
     owner_id: int
     owner: OwnerBrief
     community_id: int
+    community: CommunityOut
     book: BookOut
+    listing_type: ListingType
     condition_note: str | None
     can_gift: bool
     can_swap: bool
     can_borrow: bool
+    can_sell: bool
+    sell_price: int | None
     borrow_terms: str | None
     status: ListingStatus
     created_at: datetime

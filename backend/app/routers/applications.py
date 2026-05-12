@@ -83,6 +83,8 @@ def create_application(
         raise HTTPException(status_code=400, detail="listing not available for gift")
     if req.type == TransactionType.SWAP and not listing.can_swap:
         raise HTTPException(status_code=400, detail="listing not available for swap")
+    if req.type == TransactionType.SELL and not listing.can_sell:
+        raise HTTPException(status_code=400, detail="listing not available for sell")
     if req.type == TransactionType.BORROW:
         if not listing.can_borrow:
             raise HTTPException(status_code=400, detail="listing not available for borrow")

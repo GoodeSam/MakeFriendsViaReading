@@ -20,6 +20,7 @@ from .enums import (
     EndorsementStatus,
     InviteCodeStatus,
     ListingStatus,
+    ListingType,
     MessageType,
     ApplicationStatus,
     RiskLevel,
@@ -101,16 +102,20 @@ class Listing(Base):
     owner_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     community_id: Mapped[int] = mapped_column(ForeignKey("communities.id"), index=True)
     book_id: Mapped[int] = mapped_column(ForeignKey("books.id"))
+    listing_type: Mapped[ListingType] = mapped_column(SAEnum(ListingType), default=ListingType.OFFER)
     condition_note: Mapped[str | None] = mapped_column(String(120), nullable=True)
     can_gift: Mapped[bool] = mapped_column(Boolean, default=False)
     can_swap: Mapped[bool] = mapped_column(Boolean, default=False)
     can_borrow: Mapped[bool] = mapped_column(Boolean, default=False)
+    can_sell: Mapped[bool] = mapped_column(Boolean, default=False)
+    sell_price: Mapped[int | None] = mapped_column(nullable=True)
     borrow_terms: Mapped[str | None] = mapped_column(Text, nullable=True)
     status: Mapped[ListingStatus] = mapped_column(SAEnum(ListingStatus), default=ListingStatus.ACTIVE)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
     owner: Mapped["User"] = relationship(back_populates="listings")
     book: Mapped["Book"] = relationship()
+    community: Mapped["Community"] = relationship()
 
 
 class Application(Base):

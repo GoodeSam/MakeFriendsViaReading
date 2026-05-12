@@ -1,6 +1,6 @@
 """Seed demo data. Run from the backend/ directory: `python -m app.seed`"""
 from .database import Base, SessionLocal, engine
-from .enums import AgeRange, BookCategory, InviteCodeStatus, ListingStatus
+from .enums import AgeRange, BookCategory, InviteCodeStatus, ListingType
 from .models import Book, Child, Community, InviteCode, Listing, User
 
 
@@ -36,15 +36,15 @@ def main() -> None:
 
         books = [
             Book(isbn="9787544291293", title="猜猜我有多爱你", author="山姆·麦克布雷尼",
-                 publisher="南海出版公司", category=BookCategory.WHITELIST),
+                 publisher="南海出版公司", category=BookCategory.WHITELIST, circulation_count=8),
             Book(isbn="9787539190488", title="活了100万次的猫", author="佐野洋子",
-                 publisher="二十一世纪出版社", category=BookCategory.WHITELIST),
+                 publisher="二十一世纪出版社", category=BookCategory.WHITELIST, circulation_count=5),
             Book(isbn="9787530746301", title="好饿的毛毛虫", author="埃瑞克·卡尔",
-                 publisher="明天出版社", category=BookCategory.WHITELIST),
+                 publisher="明天出版社", category=BookCategory.WHITELIST, circulation_count=3),
             Book(isbn="9787545203301", title="彩虹鱼", author="马库斯·菲斯特",
-                 publisher="河北教育出版社", category=BookCategory.WHITELIST),
+                 publisher="河北教育出版社", category=BookCategory.WHITELIST, circulation_count=2),
             Book(isbn="9787532244904", title="大卫不可以", author="大卫·香农",
-                 publisher="上海科学技术出版社", category=BookCategory.WHITELIST),
+                 publisher="上海科学技术出版社", category=BookCategory.WHITELIST, circulation_count=1),
             Book(
                 isbn="9787221176134", title="牛津阅读树 Stage 1", author="Roderick Hunt",
                 publisher="Oxford University Press", category=BookCategory.WHITELIST,
@@ -54,29 +54,50 @@ def main() -> None:
         db.add_all(books)
         db.flush()
 
-        b = {b.isbn: b for b in books}
+        b = {bk.isbn: bk for bk in books}
         listings = [
+            # Offer: gift
             Listing(owner_id=u1.id, community_id=c1.id, book_id=b["9787544291293"].id,
-                    can_gift=True, condition_note="八成新，孩子非常喜欢"),
+                    listing_type=ListingType.OFFER, can_gift=True,
+                    condition_note="八成新，孩子非常喜欢"),
+            # Offer: swap
             Listing(owner_id=u1.id, community_id=c1.id, book_id=b["9787530746301"].id,
-                    can_swap=True, condition_note="有几处涂鸦，内容完整"),
+                    listing_type=ListingType.OFFER, can_swap=True,
+                    condition_note="有几处涂鸦，内容完整"),
+            # Offer: gift + swap + sell
             Listing(owner_id=u1.id, community_id=c1.id, book_id=b["9787532244904"].id,
-                    can_gift=True, can_swap=True, condition_note="全新未读"),
+                    listing_type=ListingType.OFFER, can_gift=True, can_swap=True,
+                    can_sell=True, sell_price=20, condition_note="全新未读"),
+            # Offer: gift
             Listing(owner_id=u2.id, community_id=c1.id, book_id=b["9787539190488"].id,
-                    can_gift=True, condition_note="九成新"),
+                    listing_type=ListingType.OFFER, can_gift=True, condition_note="九成新"),
+            # Offer: swap + borrow
             Listing(owner_id=u2.id, community_id=c1.id, book_id=b["9787545203301"].id,
-                    can_swap=True, can_borrow=True,
+                    listing_type=ListingType.OFFER, can_swap=True, can_borrow=True,
                     borrow_terms="借期2周，请保持书况"),
+            # Offer: sell only
+            Listing(owner_id=u2.id, community_id=c1.id, book_id=b["9787544291293"].id,
+                    listing_type=ListingType.OFFER, can_sell=True, sell_price=15,
+                    condition_note="八成新，有外膜保护"),
+            # Wanted: looking for 好饿的毛毛虫
+            Listing(owner_id=u2.id, community_id=c1.id, book_id=b["9787530746301"].id,
+                    listing_type=ListingType.WANTED, can_gift=True, can_swap=True,
+                    condition_note="孩子特别想读，哪位邻居可以赠送或换书"),
+            # Wanted: willing to buy 彩虹鱼
+            Listing(owner_id=u1.id, community_id=c1.id, book_id=b["9787545203301"].id,
+                    listing_type=ListingType.WANTED, can_sell=True, sell_price=25,
+                    condition_note="寻找彩虹鱼，可以购买"),
         ]
         db.add_all(listings)
         db.commit()
 
         print("✅ seed data created:")
         print(f"  - communities: {c1.name} (id={c1.id}), {c2.name} (id={c2.id})")
-        print("  - invite codes: WELCOME001 (社区1), WELCOME002 (社区1), WELCOME003 (社区2)")
+        print("  - invite codes: WELCOME001/002 (阳光花园), WELCOME003 (星河湾)")
         print("  - demo users: 13800000001 (小明妈妈), 13800000002 (小红爸爸) — code: 123456")
-        print(f"  - books: {[b.title for b in books]}")
-        print(f"  - listings: {len(listings)} listings in 阳光花园")
+        print(f"  - books: {[bk.title for bk in books]}")
+        print(f"  - listings: {len([l for l in listings if l.listing_type == ListingType.OFFER])} offers, "
+              f"{len([l for l in listings if l.listing_type == ListingType.WANTED])} wanted")
     finally:
         db.close()
 

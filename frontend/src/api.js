@@ -30,7 +30,15 @@ export const api = {
 
   getCommunities: () => request('GET', '/communities'),
 
-  getListings: (type) => request('GET', `/listings${type ? '?type=' + type : ''}`),
+  getListings: ({ type, listingType, sort, allCommunities } = {}) => {
+    const p = new URLSearchParams()
+    if (type) p.set('type', type)
+    if (listingType) p.set('listing_type', listingType)
+    if (sort) p.set('sort', sort)
+    if (allCommunities) p.set('all_communities', 'true')
+    const qs = p.toString()
+    return request('GET', `/listings${qs ? '?' + qs : ''}`)
+  },
   getMyListings: () => request('GET', '/listings/mine'),
   getListing: (id) => request('GET', `/listings/${id}`),
   createListing: (data) => request('POST', '/listings', data),

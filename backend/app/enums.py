@@ -37,6 +37,12 @@ class TransactionType(str, enum.Enum):
     GIFT = "gift"
     SWAP = "swap"
     BORROW = "borrow"
+    SELL = "sell"
+
+
+class ListingType(str, enum.Enum):
+    OFFER = "offer"
+    WANTED = "wanted"
 
 
 class ApplicationStatus(str, enum.Enum):

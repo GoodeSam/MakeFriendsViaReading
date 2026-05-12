@@ -20,9 +20,13 @@
     "react-dom": "^18.0.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.29.0",
+    "@babel/preset-env": "^7.29.5",
+    "@babel/preset-react": "^7.28.5",
     "@tarojs/cli": "4.x",
     "@tarojs/helper": "4.x",
     "@tarojs/webpack5-runner": "4.x",
+    "babel-preset-taro": "^4.2.0",
     "sass": "^1.77.0"
   }
 }

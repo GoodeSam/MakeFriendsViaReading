@@ -197,6 +197,9 @@ def complete_application(
     app.status = ApplicationStatus.COMPLETED
     app.completed_at = datetime.now(timezone.utc)
     listing.status = ListingStatus.COMPLETED
+    book = db.get(Book, listing.book_id)
+    if book:
+        book.circulation_count += 1
     db.commit()
     db.refresh(app)
     return app

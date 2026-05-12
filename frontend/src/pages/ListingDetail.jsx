@@ -70,6 +70,12 @@ export default function ListingDetail() {
               {listing.can_swap && <span className="tag tag-swap">可换书</span>}
               {listing.can_borrow && <span className="tag tag-borrow">可借阅</span>}
             </div>
+            {listing.book.circulation_count > 0 && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: listing.book.circulation_count >= 5 ? '#bf360c' : listing.book.circulation_count >= 2 ? '#e65100' : '#999', marginBottom: 4 }}>
+                <span>{listing.book.circulation_count >= 5 ? '🔥🔥' : listing.book.circulation_count >= 2 ? '🔥' : '📊'}</span>
+                <span>已在小区流转 <strong>{listing.book.circulation_count}</strong> 次，深受家长喜爱</span>
+              </div>
+            )}
           </div>
           <div className="section-bg" />
           <div style={{ padding: '14px 16px', background: '#fff' }}>

@@ -90,6 +90,7 @@ class Book(Base):
     # 高价值套书系统层面禁借 (v3.2 §4.4.2)
     is_high_value: Mapped[bool] = mapped_column(Boolean, default=False)
     series_name: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    circulation_count: Mapped[int] = mapped_column(default=0, server_default="0")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
 

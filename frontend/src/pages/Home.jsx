@@ -8,9 +8,18 @@ const FILTERS = [
   { value: 'gift', label: '可赠' },
   { value: 'swap', label: '可换' },
   { value: 'borrow', label: '可借' },
+  { value: 'hot', label: '🔥 热门' },
 ]
 
+function hotBadge(count) {
+  if (count >= 5) return { label: `🔥🔥 流转${count}次`, cls: 'tag-hot-high' }
+  if (count >= 2) return { label: `🔥 流转${count}次`, cls: 'tag-hot' }
+  if (count >= 1) return { label: `流转${count}次`, cls: 'tag-circulated' }
+  return null
+}
+
 function BookCard({ listing }) {
+  const badge = hotBadge(listing.book.circulation_count)
   return (
     <Link to={`/listing/${listing.id}`} className="book-card">
       <div className="book-cover">
@@ -25,6 +34,7 @@ function BookCard({ listing }) {
           {listing.can_gift && <span className="tag tag-gift">可赠</span>}
           {listing.can_swap && <span className="tag tag-swap">可换</span>}
           {listing.can_borrow && <span className="tag tag-borrow">可借</span>}
+          {badge && <span className={`tag ${badge.cls}`}>{badge.label}</span>}
         </div>
         <div className="book-owner">👤 {listing.owner.nickname} · {listing.condition_note || '书况良好'}</div>
       </div>
@@ -42,8 +52,14 @@ export default function Home() {
   useEffect(() => {
     setLoading(true)
     setError('')
-    api.getListings(filter)
-      .then(setListings)
+    const apiFilter = filter === 'hot' ? '' : filter
+    api.getListings(apiFilter)
+      .then(data => {
+        if (filter === 'hot') {
+          data = [...data].sort((a, b) => b.book.circulation_count - a.book.circulation_count)
+        }
+        setListings(data)
+      })
       .catch(e => setError(e.message))
       .finally(() => setLoading(false))
   }, [filter])

@@ -73,6 +73,7 @@ class BookOut(BaseModel):
     cover_url: str | None
     category: BookCategory
     is_high_value: bool
+    circulation_count: int
 
 
 # ---- Listing ----

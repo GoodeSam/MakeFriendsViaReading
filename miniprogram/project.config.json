@@ -1,0 +1,20 @@
+{
+  "miniprogramRoot": "dist/",
+  "projectname": "mfvr-miniprogram",
+  "description": "以书会友",
+  "appid": "wx_placeholder_replace_before_publish",
+  "setting": {
+    "urlCheck": false,
+    "es6": true,
+    "enhance": true,
+    "postcss": true,
+    "minified": true,
+    "newFeature": false,
+    "coverView": true,
+    "showShadowRootInWxmlPanel": true,
+    "uploadWithSourceMap": true
+  },
+  "compileType": "miniprogram",
+  "srcMiniprogramRoot": "dist/",
+  "condition": {}
+}
